@@ -1,0 +1,32 @@
+﻿@using Bunit.Rendering;
+@using NUnit.Framework;
+@using BlazorDemo.Model;
+@using BlazorDemo.Components;
+@inherits Bunit.TestContext;
+
+@code {
+  [Test]
+  public void SimpleBindingTest()
+  {
+    using var ctx = new Bunit.TestContext();
+    var person = new Person();
+    var cut = ctx.Render(
+      @<TestWrapperComponent>
+        <p>@person.Firstname</p>
+      </TestWrapperComponent>
+    );
+
+    // Here my component would change the model
+    // For simplicity I just change it
+    person.Firstname = "John";
+
+    // Get the component and call a method that invokes "StateHasChanged".
+    var renderedComponent = (IRenderedComponent<IComponent>)cut;
+    var wrapperComponent = renderedComponent.FindComponent<TestWrapperComponent>();
+    wrapperComponent.InvokeAsync(() => wrapperComponent.Instance.Refresh());
+
+    var pElement = cut.Find("p");
+    // Passes
+    pElement.MarkupMatches("<p>John</p>");
+  }
+}

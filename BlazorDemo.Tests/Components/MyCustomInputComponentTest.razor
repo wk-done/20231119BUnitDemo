@@ -47,7 +47,7 @@
       </EditForm>
       <p>@testModel.Firstname</p>
     </TestWrapperComponent>
-    );
+  );
 
     var inputElement = cut.Find("input");
     inputElement.Input("John");
@@ -64,5 +64,4 @@
     // Passes.
     pElement.MarkupMatches("<p>John</p>");
   }
-
 }
