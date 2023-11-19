@@ -1,0 +1,37 @@
+﻿@using Bunit
+@using Bunit.Rendering;
+@using Microsoft.AspNetCore.Components.Forms
+@using NUnit.Framework;
+@using Microsoft.AspNetCore.Components;
+@using Microsoft.Extensions.DependencyInjection;
+@using BlazorDemo.Model;
+@using BlazorDemo.Components;
+@inherits Bunit.TestContext;
+
+@code {
+
+  [Test]
+  public void TestMyInputComponent()
+  {
+    var testModel = new Person();
+    var editCtx = new EditContext(testModel);
+    var cut = Render(
+      @<div>
+        <EditForm EditContext="editCtx">
+            <MyCustomInputComponent Label="Firstname" @bind-Value="testModel.Firstname"></MyCustomInputComponent>
+        </EditForm>
+        <p>@testModel.Firstname</p>
+      </div>
+      );
+
+    var inputElement = cut.Find("input");
+    inputElement.Input("John");
+
+    // Passes
+    Assert.That(testModel.Firstname, Is.EqualTo("John"));
+    
+    var pElement = cut.Find("p");
+    // Fails
+    pElement.MarkupMatches("<p>John</p>");
+  }
+}

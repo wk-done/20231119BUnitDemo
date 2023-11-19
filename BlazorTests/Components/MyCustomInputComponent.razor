@@ -1,0 +1,57 @@
+﻿<div>
+  <label>@(Label??"Missing Label")
+    <input type="text" @bind-value="InputValue" @bind-value:event="oninput" />
+  </label>
+</div>
+
+
+@code {
+  private string _value = null!;
+
+  /// <summary>
+  /// Gets or sets the value of the components input control.
+  /// </summary>
+  public string InputValue 
+  {
+    get => this._value;
+    set => this.Value = value;
+  }
+
+  /// <summary>
+  /// Gets or sets the label for the input.
+  /// </summary>
+  [Parameter]
+  public string Label { get; set; } = null!;
+
+  /// <summary>
+  /// Gets or sets the bound value-canged event.
+  /// </summary>
+  [Parameter]
+  public EventCallback<string> ValueChanged { get; set; }
+
+  /// <summary>
+  /// Gets or sets the bound value of the component.
+  /// </summary>
+  [Parameter]
+  public string Value 
+  {
+    get
+    {
+      return this._value;
+    }
+
+    set
+    {
+      var changed = (value is null ^ this._value is null)||(value != this._value);
+      this._value = value!;
+      if (changed)
+      {
+        this.InvokeAsync(() => 
+        {
+          this.ValueChanged.InvokeAsync(this._value);
+          this.StateHasChanged();
+        });
+      }
+    }
+  }
+}

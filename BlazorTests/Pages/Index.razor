@@ -1,0 +1,33 @@
+﻿@page "/"
+@using Microsoft.AspNetCore.Components.Forms;
+@using BlazorDemo.Model;
+@using BlazorDemo.Components;
+
+<EditForm EditContext="this.editContext">
+  <MyCustomInputComponent Label="Firstname" @bind-Value="this.personModel.Firstname"></MyCustomInputComponent>  
+  <MyCustomInputComponent @bind-Value="this.personModel.Lastname"></MyCustomInputComponent>
+
+</EditForm>
+<p>FirstName: @this.personModel.Firstname</p>
+<p>LastName: @this.personModel.Lastname</p>
+
+
+
+@code {
+  private Person personModel = null!;
+  private EditContext editContext = null!;
+
+  /// <summary>
+  /// Called on initialization of the page.
+  /// </summary>
+  protected override void OnInitialized()
+  {
+    base.OnInitialized();
+    this.personModel = new Person
+      {
+        Lastname = "Doe"
+    };
+
+    this.editContext = new EditContext(this.personModel);
+  }
+}
