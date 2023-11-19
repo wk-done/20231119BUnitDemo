@@ -1,0 +1,13 @@
+﻿<div>
+  @this.ChildContent
+</div>
+
+@code {
+  [Parameter]
+  public RenderFragment ChildContent { get; set; } = null!;
+
+  public void Refresh()
+  {
+    this.StateHasChanged();
+  }
+}

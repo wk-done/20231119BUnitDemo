@@ -34,4 +34,35 @@
     // Fails
     pElement.MarkupMatches("<p>John</p>");
   }
+
+  [Test]
+  public void TestMyInputComponentWithWrapper()
+  {
+    var testModel = new Person();
+    var editCtx = new EditContext(testModel);
+    var cut = Render(
+    @<TestWrapperComponent>
+      <EditForm EditContext="editCtx">
+        <MyCustomInputComponent Label="Firstname" @bind-Value="testModel.Firstname"></MyCustomInputComponent>
+      </EditForm>
+      <p>@testModel.Firstname</p>
+    </TestWrapperComponent>
+    );
+
+    var inputElement = cut.Find("input");
+    inputElement.Input("John");
+
+    // Get the component and call a method that invokes "StateHasChanged".
+    var renderedComponent = (IRenderedComponent<IComponent>)cut;
+    var wrapperComponent = renderedComponent.FindComponent<TestWrapperComponent>();
+    wrapperComponent.InvokeAsync(() => wrapperComponent.Instance.Refresh());
+
+    // Passes.
+    Assert.That(testModel.Firstname, Is.EqualTo("John"));
+
+    var pElement = cut.Find("p");
+    // Passes.
+    pElement.MarkupMatches("<p>John</p>");
+  }
+
 }
